@@ -1,0 +1,28 @@
+---
+AppBundle\Entity\Tenant:
+  type: entity
+  table: tenants
+  repositoryClass: AppBundle\Entity\TenantRepository
+
+  id:
+    id:
+      type: string
+
+  fields:
+    server:
+      type: string
+      nullable: false
+      length: 255
+    dbname:
+      type: string
+      nullable: false
+      length: 255
+      name: db
+    username:
+      type: string
+      nullable: false
+      length: 255
+    password:
+      type: string
+      nullable: false
+      length: 255

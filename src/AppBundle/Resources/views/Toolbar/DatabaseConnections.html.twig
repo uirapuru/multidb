@@ -1,0 +1,28 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    <style>
+        ol#databases-indicator {
+            text-indent: 0;
+            margin: 0;
+            padding: 0;
+            display: inline-block !important;
+            position: relative;
+            left: 5px;
+            list-style-position: inside;
+            font-size: 11px;
+            line-height: 11px;
+        }
+        ol#databases-indicator li {
+            line-height: inherit;
+            text-indent: inherit;
+            margin: inherit;
+            padding: inherit;
+        }
+    </style>
+
+    <ol id="databases-indicator">
+        <li>{{ collector.getDefault() }}</li>
+        <li>{{ collector.getTenant() }}</li>
+    </ol>
+{% endblock %}

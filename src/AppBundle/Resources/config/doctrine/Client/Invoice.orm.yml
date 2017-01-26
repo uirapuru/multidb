@@ -1,0 +1,20 @@
+---
+Client\Invoice:
+  type: entity
+  table: invoices
+  repositoryClass: Client\InvoiceRepository
+
+  id:
+    number:
+      type: guid
+      generator: { strategy: UUID }
+
+  fields:
+    company:
+      type: string
+      nullable: false
+      length: 255
+    createdAt:
+      type: datetime
+      nullable: false
+      length: 255

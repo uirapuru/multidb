@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{# @var tenants \AppBundle\Entity\Tenant[] #}
+{# @var invoices \Client\Invoice[] #}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+{% endblock javascripts %}
+
+{% block body %}
+<div class="container">
+    <div class="header clearfix">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                {% for tenant in tenants %}
+                    <li role="presentation" class="active"><a href="?db={{ tenant.getId() }}">{{ tenant.getId() }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+        <h3 class="text-muted">Project name</h3>
+    </div>
+
+    <div class="jumbotron">
+        <h1>Multitenant database app!</h1>
+        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
+    </div>
+
+    <div class="row marketing">
+        <div class="col-lg-6">
+                {% if name is defined %}
+                    <h2>Invoices for {{ name }}:</h2>
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Number</th>
+                                <th>Company</th>
+                                <th>CreatedAt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for invoice in invoices %}
+                            <tr>
+                                <td>{{ invoice.number }}</td>
+                                <td>{{ invoice.company }}</td>
+                                <td>{{ invoice.createdAt|date('Y-m-d') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

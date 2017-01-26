@@ -1,0 +1,71 @@
+parameters:
+  allowed_commands:
+    - doctrine:database:create
+    - doctrine:database:drop
+    - doctrine:schema:update
+    - doctrine:schema:create
+    - doctrine:schema:drop
+    - doctrine:fixtures:load
+    - doctrine:migrations:diff
+    - doctrine:migrations:execute
+    - doctrine:migrations:generate
+    - doctrine:migrations:migrate
+    - doctrine:migrations:version
+    - doctrine:migrations:status
+    - doctrine:mapping:info
+
+  fixtures:
+    default: %kernel.root_dir%/../src/AppBundle/DataFixtures/Standard
+    tenant: %kernel.root_dir%/../src/AppBundle/DataFixtures/Tenant
+
+services:
+  app_bundle.collector.db_connections:
+    class: AppBundle\Collector\MultiDbCollector
+    arguments:
+      - @doctrine.dbal.default_connection
+      - @doctrine.dbal.tenant_connection
+    tags:
+      - { name: data_collector, template: "AppBundle:Toolbar:DatabaseConnections.html.twig", id: "database_connections" }
+
+  app_bundle.command_listener:
+      class: AppBundle\Listener\CommandListener
+      arguments:
+        - @app_bundle.repository.tenant
+        - @doctrine.dbal.tenant_connection
+        - @=service('doctrine.dbal.default_connection').getSchemaManager()
+        - %allowed_commands%
+      tags:
+        - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 255 }
+
+  app_bundle.fixtures_listener:
+      class: AppBundle\Listener\FixturesListener
+      arguments:
+        - %fixtures%
+      tags:
+        - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 254 }
+
+  app_bundle.dbma_listener:
+      class: AppBundle\Listener\DatabaseListener
+      tags:
+        - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 254 }
+
+
+  app_bundle.request_listener:
+    class: AppBundle\Listener\TenantListener
+    arguments:
+      - @doctrine.dbal.tenant_connection
+      - @app_bundle.repository.tenant
+    tags:
+      - {name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+  app_bundle.repository.tenant:
+    class: AppBundle\Entity\TenantRepository
+    factory: 'doctrine.orm.default_entity_manager:getRepository'
+    arguments:
+      - AppBundle\Entity\Tenant
+
+  app_bundle.repository.invoice:
+    class: Client\InvoiceRepository
+    factory: 'doctrine.orm.tenant_entity_manager:getRepository'
+    arguments:
+      - Client\Invoice

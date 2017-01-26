@@ -1,0 +1,31 @@
+<?php
+
+namespace AppBundle\Controller;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+
+class DefaultController extends Controller
+{
+    /**
+     * @Route("/", name="homepage")
+     */
+    public function indexAction(Request $request)
+    {
+        $invoices = [];
+        $name = null;
+
+        if($this->get('doctrine.dbal.tenant_connection')->isConnected())
+        {
+            $invoices = $this->get('app_bundle.repository.invoice')->findAll();
+            $name = $this->get('doctrine.dbal.tenant_connection')->getDatabase();
+        }
+
+        return $this->render('default/index.html.twig', [
+            'tenants' => $this->get('app_bundle.repository.tenant')->findAll(),
+            'name' => $name,
+            'invoices' => $invoices
+        ]);
+    }
+}
